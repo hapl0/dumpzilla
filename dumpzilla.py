@@ -279,7 +279,7 @@ def show_cookies_firefox(varDir, varDom = 1, varDomain = "%",varName = "%",varHo
             print('Domain: %s' % path.split(row[0][::-1])[1][1:])
          if row[0].startswith("/") == False and row[0].find("http") != -1:
             print('Domain: %s' % path.split(row[0][::-1])[1].rsplit(':.', 1)[1])
-         print('DOM data: %s' % row[1])
+         print('DOM data: %s' % row[1].encode('utf-8'))
          print ("\n------------------------\n")
          count = count +1
       contador['DOM'] = count
@@ -332,7 +332,7 @@ def show_preferences_firefox(varDir):
 
    firefox = 0
    seamonkey = 1
-   for line in open(varDir+dirprefs):
+   for line in open(varDir+dirprefs,encoding="utf-8"):
       if "extensions.lastAppVersion" in line:
          seamonkey = line.split()[1][:-2].replace("\"", "")
          print ("\nBrowser Version: "+line.split()[1][:-2].replace("\"", ""))
@@ -582,8 +582,8 @@ def show_forms_firefox(varDir,varFormsValue = '%', varFormRange1 = "1991-08-06 0
    cursor = conn.cursor()
    cursor.execute("select fieldname,value,timesUsed,datetime(firstUsed/1000000,'unixepoch','localtime') as last,datetime(lastUsed/1000000,'unixepoch','localtime') from moz_formhistory where value like ? escape '\\' and last between ? and ?",[varFormsValue,varFormRange1,varFormRange2])
    for row in cursor:
-      print('Name: %s' % row[0])
-      print('Value: %s' % row[1])
+      print('Name: %s' % row[0].encode('utf-8'))
+      print('Value: %s' % row[1].encode('utf-8'))
       print('Times Used: %d' % row[2])
       print('First Used: %s' % row[3])
       print('LastUsed: %s' % row[4])
@@ -616,7 +616,7 @@ def show_history_firefox(varDir, varURL = '%', varFrequency = 1, varTitle = '%',
 
    for row in cursor:
       print('Last visit: %s' % row[0])
-      print('Title: %s' % row[1])
+      print('Title: %s' % row[1].encode('utf-8'))
       print('URL: %s' % row[2])
       print('Frequency: %d' % row[3])
       print("\n")
@@ -641,8 +641,8 @@ def show_bookmarks_firefox(varDir, varBookmarkRange1 = "1991-08-06 00:00:00", va
    cursor = conn.cursor()
    cursor.execute('select bm.title,pl.url,datetime(bm.dateAdded/1000000,"unixepoch","localtime"),datetime(bm.lastModified/1000000,"unixepoch","localtime") as last from moz_places pl,moz_bookmarks bm where bm.fk=pl.id and last between ? and ?',[varBookmarkRange1,varBookmarkRange2] )
    for row in cursor:
-      print('Title: %s' % row[0])
-      print('URL: %s' % row[1])
+      print('Title: %s' % str(row[0]).encode('utf-8'))
+      print('URL: %s' % row[1].encode('utf-8'))
       print('Date add: %s' % row[2])
       print('Last modified: %s' % row[3])
       print("\n")
@@ -894,7 +894,7 @@ def show_watch(varDir,watchtext = 1):
    if sys.platform.startswith('win') == True:
       print ("\n--Watch option not supported on Windows!\n")
       return
-   elif python3_path == "":
+   elif python3_path == "/bin/python3":
       print ("\n[ERROR]: Edit the header of dumpzilla.py and add the python3 path to the variable 'python3_path'.\nExample: python3_path = '/usr/bin/python3.3'\n")
       sys.exit()
 
